@@ -148,43 +148,32 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Configuration - IMPORTANTE: Leia as instruções abaixo!
-        // Quando você executa este arquivo localmente (index.html),
-        // as variáveis __app_id, __firebase_config e __initial_auth_token NÃO estão disponíveis.
-        // Você precisa colar a sua configuração do Firebase AQUI para que o app funcione localmente.
+        // Firebase Configuration - IMPORTANTE: Você deve colar sua configuração AQUI!
+        // Quando este código roda no GitHub Pages (ou localmente), as variáveis
+        // __app_id, __firebase_config e __initial_auth_token NÃO estão disponíveis.
+        // Portanto, a configuração REAL do seu projeto Firebase precisa ser inserida
+        // diretamente aqui dentro do objeto 'localFirebaseConfig'.
 
         // 1. Vá para o Console do Firebase: https://console.firebase.google.com/
-        // 2. Selecione seu projeto.
+        // 2. Selecione seu projeto "repositoriosolucoes-eproc".
         // 3. Vá em "Configurações do Projeto" (o ícone de engrenagem ao lado de "Visão geral do projeto").
         // 4. Role para baixo até a seção "Seus apps" e clique no app da web (ícone </>).
-        // 5. Copie o objeto 'firebaseConfig' (que começa com apiKey: "...", authDomain: "...", etc.).
-        // 6. Cole esse objeto NO LUGAR de `{}` abaixo.
+        // 5. Copie o objeto 'firebaseConfig' COMPLETO (que começa com apiKey: "...", authDomain: "...", etc.).
+        // 6. Cole esse objeto NO LUGAR dos comentários DENTRO do 'localFirebaseConfig' abaixo.
 
-        // Exemplo:
-        // const myFirebaseConfig = {
-        //   apiKey: "SUA_API_KEY",
-        //   authDomain: "SEU_AUTH_DOMAIN",
-        //   projectId: "SEU_PROJECT_ID",
-        //   storageBucket: "SEU_STORAGE_BUCKET",
-        //   messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-        //   appId: "SEU_APP_ID"
-        // };
-        // const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : myFirebaseConfig;
-
-        // Para rodar localmente, o simplest é:
-        const localFirebaseConfig = {
-             // COLE SUA CONFIGURAÇÃO DO FIREBASE AQUI!
-             // Exemplo:
-             // apiKey: "AIzaSy...",
-             // authDomain: "seu-projeto.firebaseapp.com",
-             // projectId: "seu-projeto-id",
-             // storageBucket: "seu-projeto-id.appspot.com",
-             // messagingSenderId: "1234567890",
-             // appId: "1:1234567890:web:abcdef123456"
+        const firebaseConfig = {
+  	   apiKey: "AIzaSyCWgNUwYLcCikcV5xF4PZ7g7meLIuFDIHM",
+           authDomain: "repositoriosolucoes-eproc.firebaseapp.com",
+           projectId: "repositoriosolucoes-eproc",
+           storageBucket: "repositoriosolucoes-eproc.firebasestorage.app",
+           messagingSenderId: "386493195073",
+           appId: "1:386493195073:web:23b8a78bbc26c2c4d077c0"
         };
 
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id'; // 'default-app-id' será usado localmente
+        // Estas variáveis são usadas para compatibilidade com o ambiente do Canvas.
+        // Localmente ou no GitHub Pages, 'firebaseConfig' usará 'localFirebaseConfig'.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
@@ -440,15 +429,6 @@
         // Initialize Firebase when the window loads
         window.onload = async () => {
             await initializeFirebase();
-            // Populate initial data after Firebase is initialized and user is potentially authenticated
-            // This ensures data is added only once if the collection is empty.
-            // Moved populateInitialData into initializeFirebase to ensure it runs after auth state is determined.
-            // if (db && userId) { // Check if db and userId are available after initialization
-            //      await populateInitialData();
-            // }
-            // Display all solutions initially after data is loaded/synced from Firestore
-            // This is handled by setupSolutionListener which updates allSolutions
-            // and calls displaySolutions. If no search term is present, it will show all.
         };
     </script>
 </body>
