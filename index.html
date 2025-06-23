@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositório de Soluções Eproc</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f0f4f8; /* Light gray-blue background */
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .input-field {
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e0; /* Gray-300 */
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+        }
+        .button-primary {
+            background-color: #3b82f6; /* Blue-500 */
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .button-primary:hover {
+            background-color: #2563eb; /* Blue-600 */
+        }
+        .button-secondary {
+            background-color: #e2e8f0; /* Gray-200 */
+            color: #4a5568; /* Gray-700 */
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .button-secondary:hover {
+            background-color: #cbd5e0; /* Gray-300 */
+        }
+        .solution-card {
+            background-color: #f7fafc; /* Gray-50 */
+            border: 1px solid #e2e8f0; /* Gray-200 */
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .solution-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2c5282; /* Darker blue for headings */
+            margin-bottom: 0.5rem;
+        }
+        .solution-card p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #4a5568; /* Gray-700 */
+        }
+        .solution-card .tag {
+            display: inline-block;
+            background-color: #bfdbfe; /* Blue-200 */
+            color: #1e40af; /* Blue-800 */
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px; /* Pill shape */
+            margin-top: 0.75rem;
+        }
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none; /* Hidden by default */
+        }
+        .message-box.error {
+            background-color: #f44336; /* Red */
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container">
+        <h1 class="text-3xl font-extrabold text-center text-blue-800 mb-6">Repositório de Soluções Eproc</h1>
+
+        <!-- Search Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Buscar Soluções</h2>
+            <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                <input type="text" id="searchInput" placeholder="Digite aqui o problema ou palavra-chave..." class="input-field flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="searchButton" class="button-primary shrink-0">Pesquisar</button>
+            </div>
+            <div id="searchResults" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Search results will be loaded here -->
+            </div>
+            <p id="noResultsMessage" class="text-center text-gray-600 mt-4 hidden">Nenhuma solução encontrada para a sua busca.</p>
+        </div>
+
+        <!-- Add New Solution Section -->
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Adicionar Nova Solução</h2>
+            <form id="addSolutionForm" class="space-y-4">
+                <div>
+                    <label for="problemInput" class="block text-sm font-medium text-gray-700 mb-1">Problema / Título da Ocorrência</label>
+                    <input type="text" id="problemInput" class="input-field focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label for="solutionInput" class="block text-sm font-medium text-gray-700 mb-1">Solução Detalhada</label>
+                    <textarea id="solutionInput" rows="5" class="input-field focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                </div>
+                <div>
+                    <label for="categoryInput" class="block text-sm font-medium text-gray-700 mb-1">Categoria (Ex: Certificado Digital, Navegador, E-mail)</label>
+                    <input type="text" id="categoryInput" class="input-field focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label for="sourceInput" class="block text-sm font-medium text-gray-700 mb-1">Origem (Ex: Ministério Público, Defensoria Pública, Integração)</label>
+                    <input type="text" id="sourceInput" class="input-field focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button type="submit" class="button-primary w-full">Adicionar Solução</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Message Box -->
+    <div id="messageBox" class="message-box"></div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Configuration - IMPORTANTE: Leia as instruções abaixo!
+        // Quando você executa este arquivo localmente (index.html),
+        // as variáveis __app_id, __firebase_config e __initial_auth_token NÃO estão disponíveis.
+        // Você precisa colar a sua configuração do Firebase AQUI para que o app funcione localmente.
+
+        // 1. Vá para o Console do Firebase: https://console.firebase.google.com/
+        // 2. Selecione seu projeto.
+        // 3. Vá em "Configurações do Projeto" (o ícone de engrenagem ao lado de "Visão geral do projeto").
+        // 4. Role para baixo até a seção "Seus apps" e clique no app da web (ícone </>).
+        // 5. Copie o objeto 'firebaseConfig' (que começa com apiKey: "...", authDomain: "...", etc.).
+        // 6. Cole esse objeto NO LUGAR de `{}` abaixo.
+
+        // Exemplo:
+        // const myFirebaseConfig = {
+        //   apiKey: "SUA_API_KEY",
+        //   authDomain: "SEU_AUTH_DOMAIN",
+        //   projectId: "SEU_PROJECT_ID",
+        //   storageBucket: "SEU_STORAGE_BUCKET",
+        //   messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+        //   appId: "SEU_APP_ID"
+        // };
+        // const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : myFirebaseConfig;
+
+        // Para rodar localmente, o simplest é:
+        const localFirebaseConfig = {
+             // COLE SUA CONFIGURAÇÃO DO FIREBASE AQUI!
+             // Exemplo:
+             // apiKey: "AIzaSy...",
+             // authDomain: "seu-projeto.firebaseapp.com",
+             // projectId: "seu-projeto-id",
+             // storageBucket: "seu-projeto-id.appspot.com",
+             // messagingSenderId: "1234567890",
+             // appId: "1:1234567890:web:abcdef123456"
+        };
+
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id'; // 'default-app-id' será usado localmente
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app;
+        let db;
+        let auth;
+        let userId = 'anonymous'; // Default to anonymous until authenticated
+        let allSolutions = []; // Array to store all solutions from Firestore
+
+        // Function to show a message (success or error)
+        function showMessage(message, isError = false) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.className = 'message-box'; // Reset classes
+            if (isError) {
+                messageBox.classList.add('error');
+            }
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 3000); // Hide after 3 seconds
+        }
+
+        // Initialize Firebase and set up authentication
+        async function initializeFirebase() {
+            try {
+                // Check if firebaseConfig is not empty
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config is empty. Please ensure Firebase is properly configured. Check the comments in the script for instructions.");
+                    showMessage("Erro de configuração do Firebase. Verifique o console para instruções.", true);
+                    return;
+                }
+
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Listen for auth state changes
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        console.log("Usuário autenticado:", userId);
+                        // Once authenticated, start listening for solutions
+                        setupSolutionListener();
+                        // Also populate initial data after authentication
+                        await populateInitialData();
+                    } else {
+                        // Attempt to sign in with custom token or anonymously
+                        try {
+                            if (initialAuthToken) {
+                                await signInWithCustomToken(auth, initialAuthToken);
+                            } else {
+                                await signInAnonymously(auth);
+                            }
+                        } catch (error) {
+                            console.error("Erro na autenticação Firebase:", error);
+                            showMessage("Erro ao autenticar no Firebase. Tente recarregar a página.", true);
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error("Erro ao inicializar Firebase:", error);
+                showMessage("Erro grave ao inicializar Firebase. Verifique o console.", true);
+            }
+        }
+
+        // Setup real-time listener for solutions from Firestore
+        function setupSolutionListener() {
+            if (!db || !userId) {
+                console.warn("Firestore not initialized or user not authenticated. Cannot set up listener.");
+                return;
+            }
+
+            // Path for public data (accessible by all authenticated users)
+            const solutionsCollectionRef = collection(db, `artifacts/${appId}/public/data/solutions`);
+
+            // Use onSnapshot for real-time updates
+            onSnapshot(solutionsCollectionRef, (snapshot) => {
+                const fetchedSolutions = [];
+                snapshot.forEach(doc => {
+                    fetchedSolutions.push({ id: doc.id, ...doc.data() });
+                });
+                allSolutions = fetchedSolutions;
+                console.log("Soluções carregadas do Firestore:", allSolutions);
+                // Re-run search with updated data if a search term is present
+                const currentSearchTerm = document.getElementById('searchInput').value;
+                if (currentSearchTerm) {
+                    performSearch(currentSearchTerm);
+                } else {
+                    // Display all solutions if no search term
+                    displaySolutions(allSolutions);
+                }
+            }, (error) => {
+                console.error("Erro ao carregar soluções do Firestore:", error);
+                showMessage("Erro ao carregar soluções. Verifique sua conexão.", true);
+            });
+        }
+
+
+        // Hardcoded initial data from CSVs for demonstration.
+        // In a real application, you might process these CSVs server-side or provide an upload feature.
+        const initialCsvData = [
+            // RepositoriodeSolucoes.xlsx - Ministério Público.csv
+            { problema: "Erro ao assinar documento digitalmente no Eproc", solucao: "Verifique se o certificado digital está instalado corretamente e se o software de assinatura (PJeOffice/Shodõ) está em execução e atualizado. Limpe o cache do navegador e tente novamente. Em alguns casos, pode ser necessário reinstalar o certificado ou o software.", categoria: "Certificado Digital", origem: "Ministério Público" },
+            { problema: "Problema de acesso com login/senha do Eproc", solucao: "Confirme se o CPF e a senha estão corretos. Se esqueceu a senha, utilize a opção 'Esqueci minha senha' na tela de login. Verifique também se o teclado numérico ou caps lock estão ativados. Se persistir, contate o suporte do Eproc.", categoria: "Acesso/Login", origem: "Ministério Público" },
+            { problema: "Páginas do Eproc não carregam ou ficam em branco", solucao: "Limpe o cache e os cookies do seu navegador. Verifique a conexão com a internet. Tente acessar o sistema em outro navegador (Firefox ou Chrome são os mais recomendados). Desative temporariamente extensões do navegador que possam estar causando conflito.", categoria: "Navegação", origem: "Ministério Público" },
+            { problema: "Não consigo visualizar os autos do processo no Eproc", solucao: "Verifique se você possui o plugin PDF instalado no navegador e se ele está atualizado. Algumas visualizações exigem um visualizador específico. Tente baixar o documento para abrir com um leitor de PDF externo. Confirme se você tem permissão de acesso ao processo.", categoria: "Visualização de Documentos", origem: "Ministério Público" },
+            { problema: "Dificuldade para anexar arquivos no Eproc", solucao: "Verifique o tamanho e o formato do arquivo (geralmente PDF). O sistema possui limites de tamanho por anexo. Compacte o arquivo se for muito grande. Certifique-se de que o nome do arquivo não contém caracteres especiais. Tente anexar o arquivo novamente após reiniciar o navegador.", categoria: "Anexos", origem: "Ministério Público" },
+
+            // RepositoriodeSolucoes.xlsx - Defensoria Pública.csv
+            { problema: "Erro ao gerar petição inicial na Defensoria Pública", solucao: "Confirme se todos os campos obrigatórios foram preenchidos no formulário. Verifique se há inconsistências nos dados inseridos. Recarregue a página e tente gerar novamente. Se o erro persistir, anote a mensagem de erro e contate o suporte.", categoria: "Petionamento", origem: "Defensoria Pública" },
+            { problema: "Agendamento de atendimento não aparece na lista", solucao: "Verifique a data e o período do agendamento. Confirme se a busca está filtrando corretamente. Às vezes, o sistema pode levar alguns minutos para atualizar. Consulte o comprovante de agendamento se o tiver.", categoria: "Agendamento", origem: "Defensoria Pública" },
+            { problema: "Dificuldade para acessar o prontuário do assistido", solucao: "Verifique se você tem as permissões necessárias para acessar o prontuário. Confirme o número do prontuário ou os dados do assistido. Tente limpar o cache do navegador ou acessar de outro computador.", categoria: "Acesso a Dados", origem: "Defensoria Pública" },
+            { problema: "Impressão de documentos da Defensoria sai ilegível", solucao: "Verifique as configurações da impressora. Tente imprimir como PDF primeiro para ver se o problema é na formatação. Atualize os drivers da impressora. Diminua a escala de impressão.", categoria: "Impressão", origem: "Defensoria Pública" },
+            { problema: "Erro de sistema ao cadastrar novo assistido", solucao: "Verifique se todos os campos obrigatórios foram preenchidos e se não há duplicidade de CPF ou outros dados primários. Tente novamente após alguns minutos, pode ser uma instabilidade temporária. Se o erro persistir, anote o ID do erro.", categoria: "Cadastro", origem: "Defensoria Pública" },
+
+            // RepositoriodeSolucoes.xlsx - Integração .csv
+            { problema: "Integração do Eproc com outros sistemas não funciona", solucao: "Verifique os logs de integração para identificar a falha. Confirme se as credenciais de acesso aos sistemas integrados estão corretas e ativas. Verifique se há alguma indisponibilidade nos sistemas externos. Contate a equipe de TI responsável pela integração.", categoria: "Integração", origem: "Integração" },
+            { problema: "Dados não são sincronizados entre Eproc e sistema X", solucao: "Verifique a frequência da sincronização. Forçe uma sincronização manual se a opção estiver disponível. Confirme se os campos mapeados entre os sistemas estão corretos. Pode haver problemas de permissão na API de integração.", categoria: "Sincronização", origem: "Integração" },
+            { problema: "Erro de autenticação na API de integração do Eproc", solucao: "Verifique se a chave API ou o token de acesso estão válidos e não expiraram. Confirme se o endpoint da API está correto. Pode ser necessário gerar uma nova chave de acesso no portal de desenvolvedores.", categoria: "API", origem: "Integração" },
+
+            // RepositoriodeSolucoes.xlsx - Cartas Precatórias.csv
+            { problema: "Erro ao gerar Carta Precatória no Eproc", solucao: "Verifique se todos os dados obrigatórios da Carta Precatória foram preenchidos, incluindo o juízo deprecado e as partes. Confirme se os documentos necessários foram anexados. Pode haver regras específicas para o tipo de precatória que estão sendo violadas.", categoria: "Carta Precatória", origem: "Cartas Precatórias" },
+            { problema: "Status da Carta Precatória não atualiza automaticamente", solucao: "A atualização pode depender da comunicação entre sistemas. Consulte o andamento da precatória diretamente no sistema do juízo deprecado se possível. O sistema Eproc pode levar um tempo para processar as informações de retorno.", categoria: "Carta Precatória", origem: "Cartas Precatórias" },
+            { problema: "Dificuldade para anexar documentos à Carta Precatória", solucao: "Verifique os limites de tamanho e formato dos documentos para anexos. Certifique-se de que os documentos estão legíveis e não corrompidos. Tente reduzir o tamanho dos PDFs se necessário.", categoria: "Carta Precatória", origem: "Cartas Precatórias" }
+        ];
+
+        // Ensure that solutions from hardcoded data are also available for search,
+        // and if not in Firestore, add them.
+        async function populateInitialData() {
+            if (!db || !userId) {
+                console.warn("Firestore not initialized or user not authenticated. Cannot populate initial data.");
+                return;
+            }
+
+            const solutionsCollectionRef = collection(db, `artifacts/${appId}/public/data/solutions`);
+
+            // Check if collection is empty before adding initial data
+            try {
+                const q = query(solutionsCollectionRef);
+                const snapshot = await getDocs(q); // Use getDocs for a one-time fetch
+
+                if (snapshot.empty) {
+                    console.log("Adicionando dados iniciais ao Firestore...");
+                    for (const data of initialCsvData) {
+                        await addDoc(solutionsCollectionRef, data);
+                    }
+                    console.log("Dados iniciais adicionados com sucesso.");
+                } else {
+                    console.log("O Firestore já contém dados. Pulando a adição de dados iniciais.");
+                }
+            } catch (error) {
+                console.error("Erro ao verificar ou adicionar dados iniciais:", error);
+                showMessage("Erro ao popular dados iniciais. Verifique o console.", true);
+            }
+        }
+
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const searchResultsDiv = document.getElementById('searchResults');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        const addSolutionForm = document.getElementById('addSolutionForm');
+        const problemInput = document.getElementById('problemInput');
+        const solutionInput = document.getElementById('solutionInput');
+        const categoryInput = document.getElementById('categoryInput');
+        const sourceInput = document.getElementById('sourceInput');
+
+        // Function to display solutions in the UI
+        function displaySolutions(solutions) {
+            searchResultsDiv.innerHTML = ''; // Clear previous results
+            if (solutions.length === 0) {
+                noResultsMessage.classList.remove('hidden');
+            } else {
+                noResultsMessage.classList.add('hidden');
+                solutions.forEach(solution => {
+                    const solutionCard = `
+                        <div class="solution-card">
+                            <h3>${solution.problema || 'Problema não especificado'}</h3>
+                            <p>${solution.solucao || 'Solução não especificada'}</p>
+                            ${solution.categoria ? `<div class="tag">Categoria: ${solution.categoria}</div>` : ''}
+                            ${solution.origem ? `<div class="tag ml-2">Origem: ${solution.origem}</div>` : ''}
+                        </div>
+                    `;
+                    searchResultsDiv.innerHTML += solutionCard;
+                });
+            }
+        }
+
+        // Function to perform search
+        function performSearch(term) {
+            const searchTerm = term.toLowerCase();
+            const filteredSolutions = allSolutions.filter(solution =>
+                (solution.problema && solution.problema.toLowerCase().includes(searchTerm)) ||
+                (solution.solucao && solution.solucao.toLowerCase().includes(searchTerm)) ||
+                (solution.categoria && solution.categoria.toLowerCase().includes(searchTerm)) ||
+                (solution.origem && solution.origem.toLowerCase().includes(searchTerm))
+            );
+            displaySolutions(filteredSolutions);
+        }
+
+        // Event Listeners
+        searchButton.addEventListener('click', () => {
+            const searchTerm = searchInput.value;
+            performSearch(searchTerm);
+        });
+
+        searchInput.addEventListener('keyup', (event) => {
+            // Live search as user types
+            const searchTerm = searchInput.value;
+            performSearch(searchTerm);
+            if (event.key === 'Enter') {
+                searchButton.click(); // Trigger search on Enter key
+            }
+        });
+
+
+        addSolutionForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            if (!db || !userId) {
+                showMessage("Erro: Firebase não inicializado ou usuário não autenticado.", true);
+                return;
+            }
+
+            const newSolution = {
+                problema: problemInput.value.trim(),
+                solucao: solutionInput.value.trim(),
+                categoria: categoryInput.value.trim(),
+                origem: sourceInput.value.trim()
+            };
+
+            // Basic validation
+            if (!newSolution.problema || !newSolution.solucao || !newSolution.categoria) {
+                showMessage("Por favor, preencha todos os campos obrigatórios (Problema, Solução, Categoria).", true);
+                return;
+            }
+
+            try {
+                // Add the new solution to the Firestore collection
+                const solutionsCollectionRef = collection(db, `artifacts/${appId}/public/data/solutions`);
+                await addDoc(solutionsCollectionRef, newSolution);
+
+                showMessage("Solução adicionada com sucesso!");
+                addSolutionForm.reset(); // Clear the form
+            } catch (error) {
+                console.error("Erro ao adicionar solução:", error);
+                showMessage("Erro ao adicionar solução. Por favor, tente novamente.", true);
+            }
+        });
+
+        // Initialize Firebase when the window loads
+        window.onload = async () => {
+            await initializeFirebase();
+            // Populate initial data after Firebase is initialized and user is potentially authenticated
+            // This ensures data is added only once if the collection is empty.
+            // Moved populateInitialData into initializeFirebase to ensure it runs after auth state is determined.
+            // if (db && userId) { // Check if db and userId are available after initialization
+            //      await populateInitialData();
+            // }
+            // Display all solutions initially after data is loaded/synced from Firestore
+            // This is handled by setupSolutionListener which updates allSolutions
+            // and calls displaySolutions. If no search term is present, it will show all.
+        };
+    </script>
+</body>
+</html>
